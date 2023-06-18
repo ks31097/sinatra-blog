@@ -76,4 +76,16 @@ describe 'The MyBlog App' do
     expect(last_response.body).to include("<p>Main page!</p>")
     expect(last_response.body).to include("<a href=\"/about\" title=\"About\">About</a>")
   end
+
+  it "should test the session main page ('/')" do
+    browser = Rack::Test::Session.new(Rack::MockSession.new(app))
+    browser.get '/'
+    expect(browser.last_response.body).to include('turn on')
+  end
+
+  it "should test the session about page ('/about')" do
+    browser = Rack::Test::Session.new(Rack::MockSession.new(app))
+    browser.get '/about'
+    expect(browser.last_response.body).to include('turn off')
+  end
 end
