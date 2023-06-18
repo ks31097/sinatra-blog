@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-ruby "3.2.1"
+ruby File.read(".ruby-version").strip
 
 gem "sinatra", "~> 3.0"
 gem "sinatra-contrib", "~> 3.0"
