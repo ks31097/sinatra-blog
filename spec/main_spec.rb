@@ -1,12 +1,12 @@
 ENV['APP_ENV'] = 'test'
 
-require '../main'
+require './app/controllers/user_controller'
 require 'rack/test'
 
 # set :environment, :test
 
 def app
-  Sinatra::Application
+  UserController
 end
 
 describe 'The MyBlog App' do
