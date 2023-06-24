@@ -9,6 +9,9 @@ class AppController < Sinatra::Base
   configure do
     set :views, './app/views'
 
+    # __FILE__ is the current file
+    set :root, File.dirname(__FILE__)
+
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 
     enable :sessions
