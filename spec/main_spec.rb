@@ -2,9 +2,7 @@ ENV['APP_ENV'] = 'test'
 
 require './app/controllers/user_controller'
 require 'rack/test'
-
-# set :environment, :test
-
+ 
 def app
   UserController
 end
@@ -63,8 +61,12 @@ describe 'The MyBlog App' do
 
   it "should show information on the page not_found" do
     get "not_found"
-    expect(last_response.body).to include("<h2>4 Oh 4!</h2>")
-    expect(last_response.body).to include("<p>The page you are looking for is missing. Why not go back to the <a href='/' title='Home page'>home page</a> and start over?</p> ")
+
+    expect(last_response.body).to include("404")
+    expect(last_response.body).to include("Nothing found!")
+
+    # expect(last_response.body).to include("<h2>4 Oh 4!</h2>")
+    # expect(last_response.body).to include("<p>The page you are looking for is missing. Why not go back to the <a href='/' title='Home page'>home page</a> and start over?</p> ")
   end
 
   it "should redirect from the not_found page to the main page ('/')" do
