@@ -3,10 +3,14 @@
 require 'bundler'
 Bundler.require
 
+require './app/helpers/app_helper'
+
 class AppController < Sinatra::Base
 
   # Global settings
   configure do
+    helpers AppHelper
+
     set :views, './app/views'
 
     # __FILE__ is the current file
