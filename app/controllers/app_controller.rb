@@ -20,7 +20,15 @@ class AppController < Sinatra::Base
     register Sinatra::Reloader
   end
 
+  def not_found_response
+    json(code: 404, data: { error: "You seem lost. That route does not exist." })
+  end
+
   not_found do
-    erb 'error/not_found'.to_sym
+    # not_found_response
+    # erb 'error/not_found'.to_sym
+    content_type :json
+
+    { status: 404, message: 'Nothing found!' }.to_json
   end
 end
