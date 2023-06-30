@@ -1,2 +1,2 @@
 # sinatra-blog
-Building a Sinatra blog from scratch
+Building Sinatra web app from scratch
