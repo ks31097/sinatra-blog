@@ -6,7 +6,7 @@ class UserController < AppController
     title 'Hello, world!'
     @message = 'Main page!'
     @home_info = session[:info]
-    erb 'home'.to_sym
+    erb 'index'.to_sym
   end
 
   get '/about/?' do
