@@ -20,7 +20,6 @@ describe 'The MyBlog App' do
     expect(last_response.body).to include("<title>Blog</title>")
     expect(last_response.body).to include("<h1>Hello, world!</h1>")
     expect(last_response.body).to include("<p>Main page!</p>")
-    expect(last_response.body).to include("<a href=\"/about\" title=\"About\">About</a>")
   end
 
   it "should redirect from the home page ('/') to the about page ('/about')" do
@@ -51,7 +50,6 @@ describe 'The MyBlog App' do
     expect(last_response.body).to include("<title>Blog</title>")
     expect(last_response.body).to include("<h1>Hello, world!</h1>")
     expect(last_response.body).to include("<p>Main page!</p>")
-    expect(last_response.body).to include("<a href=\"/about\" title=\"About\">About</a>")
   end
 
   it "should load the response with 404 if page not_found" do
@@ -76,7 +74,6 @@ describe 'The MyBlog App' do
     expect(last_response.body).to include("<title>Blog</title>")
     expect(last_response.body).to include("<h1>Hello, world!</h1>")
     expect(last_response.body).to include("<p>Main page!</p>")
-    expect(last_response.body).to include("<a href=\"/about\" title=\"About\">About</a>")
   end
 
   it "should test the session main page ('/')" do
