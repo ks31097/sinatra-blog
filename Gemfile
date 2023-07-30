@@ -19,4 +19,5 @@ end
 group :test do
   gem "rack-test", "~> 2.1"
   gem "rspec", "~> 3.12"
+  gem "rubocop", "~> 1.55"
 end
