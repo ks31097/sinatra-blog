@@ -1,6 +1,12 @@
 <p><%= @message %></p>
 <p>Session: <%= @home_info %></p>
 
-<% 10.times do %>
-  <p><%= 'New line' %></p>
+<% if @articles.any? %>
+  <ul>
+    <% @articles.each do |article| %>
+      <li><a href="/articles/<%= article.id %>"><%= article.title %></a></li>
+    <% end %>
+  </ul>
+  <% else %>
+    <p>No articles have been created yet!</p>
 <% end %>
