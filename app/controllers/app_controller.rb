@@ -1,8 +1,4 @@
-# Include all the gem listed in Gemfile
-
-require 'bundler'
-Bundler.require
-
+require './config/environment'
 require './app/helpers/app_helper'
 
 class AppController < Sinatra::Base
@@ -19,6 +15,9 @@ class AppController < Sinatra::Base
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
 
     enable :sessions
+
+    register Sinatra::ActiveRecordExtension
+    set :database_file, "../../config/database.yml"
   end
 
  # development settings
