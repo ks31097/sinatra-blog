@@ -1,40 +1,44 @@
+# frozen_string_literal: true
+
 require './config/environment'
 require './app/helpers/app_helper'
 
 class AppController < Sinatra::Base
-
-  # Global settings
-  configure do
+  configure do # Global settings
     helpers AppHelper
 
     set :views, './app/views'
 
-    # __FILE__ is the current file
-    set :root, File.dirname(__FILE__)
+    set :root, File.dirname(__FILE__) # __FILE__ is the current file
 
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
-
     enable :sessions
 
     register Sinatra::ActiveRecordExtension
-    set :database_file, "../../config/database.yml"
+    set :database_file, '../../config/database.yml'
   end
 
- # development settings
-  configure :development do
-    # this allows us to refresh the app on the browser without needing to restart the web server
-    register Sinatra::Reloader
+  configure :development do # Development settings
+    register Sinatra::Reloader # Refresh the app without restarting the web server
   end
 
-  def not_found_response
-    json(code: 404, data: { error: "You seem lost. That route does not exist." })
+  # @api: Format the json response
+  def json_response(code: 200, data: nil)
+    status = [200, 201].include?(code) ? 'SUCCESS' : 'FAILED'
+    headers['Content-Type'] = 'application/json' # content_type :json
+
+    if data
+      { code: code, data: data, message: status }.to_json
+    end
   end
 
+  # api: Format JSON error responses
+  def error_response(code, e)
+    json_response(code: code, data: { error: e.message })
+  end
+
+  # @api: 404
   not_found do
-    # not_found_response
-    # erb 'error/not_found'.to_sym
-    content_type :json
-
-    { status: 404, message: 'Nothing found!' }.to_json
+    json_response(code: 404, data: { error: 'The page you are looking for is missing' })
   end
 end
