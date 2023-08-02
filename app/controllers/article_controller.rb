@@ -26,17 +26,6 @@ class ArticleController < ApplicationController
     end
   end
 
-  get '/about/?' do
-    begin
-      title 'About'
-      @about_info = session[:info]
-
-      erb 'about'.to_sym
-    rescue => e
-      error_response(404, e)
-    end
-  end
-
   get '/articles/:id/?' do
     begin
       @article = Article.find(params[:id])
