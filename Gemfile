@@ -11,6 +11,7 @@ gem "sysrandom", "~> 1.0"
 gem "activerecord", "~> 7.0"
 gem "sinatra-activerecord", "~> 2.0"
 gem "rake", "~> 13.0"
+gem "rack-protection", "~> 3.0"
 
 group :development do
   gem "sqlite3", "~> 1.6"
