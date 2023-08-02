@@ -1,24 +1,21 @@
 # frozen_string_literal: true
 
-require './config/environment'
-require './app/helpers/app_helper'
+require_relative '../helpers/application_helper'
 
-class AppController < Sinatra::Base
-  configure do # Global settings
-    helpers AppHelper
+class ApplicationController < Sinatra::Base
+  configure do
+    helpers ApplicationHelper
 
     set :views, './app/views'
 
     set :root, File.dirname(__FILE__) # __FILE__ is the current file
 
-    set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+    use Rack::Protection
     enable :sessions
-
-    register Sinatra::ActiveRecordExtension
-    set :database_file, '../../config/database.yml'
+    set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
   end
 
-  configure :development do # Development settings
+  configure :development do
     register Sinatra::Reloader # Refresh the app without restarting the web server
   end
 
