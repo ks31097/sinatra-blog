@@ -13,10 +13,18 @@ class ApplicationController < Sinatra::Base
     use Rack::Protection
     enable :sessions
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+
+    register Sinatra::Flash
   end
 
   configure :development do
     register Sinatra::Reloader # Refresh the app without restarting the web server
+  end
+
+  # @views: Format the erb responses
+  def erb_response(file)
+    headers['Content-Type'] = 'text/html'
+    erb file
   end
 
   # @api: Format the json response
@@ -25,8 +33,15 @@ class ApplicationController < Sinatra::Base
     headers['Content-Type'] = 'application/json' # content_type :json
 
     if data
-      { code: code, data: data, message: status }.to_json
+      [ code, { data: data, message: status }.to_json ]
     end
+  end
+
+  # @api: Format the json response db
+  def json_response_db(data: nil, message: nil)
+    headers['Content-Type'] = 'application/json' # content_type :json
+
+    { data: data, message: message }.to_json
   end
 
   # api: Format JSON error responses

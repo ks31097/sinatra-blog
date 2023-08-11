@@ -11,13 +11,10 @@
   <body>
     <div class="container">
       <%= erb 'header'.to_sym %>
-      <h1><%= @title %></h1>
-      <%= yield %>
-
-      <p class="text-end">
-        <a href="#">Back to top</a>
-       </p>
       
+      <%= styled_flash %>
+
+      <%= yield %>
       <%= erb 'footer'.to_sym %>
     </div>
   </body>
