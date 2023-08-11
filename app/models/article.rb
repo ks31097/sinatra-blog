@@ -1,5 +1,7 @@
 require "sinatra/activerecord"
 
 class Article < ActiveRecord::Base
- # validates_presence_of :title
+  validates :title, presence: true
+  validates :content, presence: true
+  # validates :autor, presence: true
 end
