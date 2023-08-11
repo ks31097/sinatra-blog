@@ -1,0 +1,9 @@
+<h1 class="position">New article</h1>
+
+<% if @article_error %>
+  <p class="error"><%= @article_error %></p>
+<%end%>
+
+<form class="form-position" action="/articles/new" method="POST">
+  <%= erb_response 'article_form'.to_sym %>
+</form>
