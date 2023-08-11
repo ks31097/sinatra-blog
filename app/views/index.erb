@@ -1,12 +1,39 @@
-<p><%= @message %></p>
-<p>Session: <%= @home_info %></p>
+<main class="container">
+  <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+    <div class="col-lg-6 px-0">
+      <h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
+      <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+      <p class="lead mb-0"><a href="#" class="text-body-emphasis">Continue reading...</a></p>
+    </div>
+  </div>
 
-<% if @articles.any? %>
-  <ul>
-    <% @articles.each do |article| %>
-      <li><a href="/articles/<%= article.id %>"><%= article.title %></a></li>
-    <% end %>
-  </ul>
-  <% else %>
-    <p>No articles have been created yet!</p>
-<% end %>
+  <div class="row g-5">
+    <div class="col-md-8">
+      <h3 class="pb-4 mb-4 fst-italic border-bottom ">
+        <%= @title %>
+      </h3>
+
+      <% if @articles.any? %>
+        <% @articles.each do |article| %>
+          <article class="blog-post">
+          <h1 class="display-5 link-body-emphasis mb-1 fst-italic">
+          <a href="/articles/<%= article.id %>"><%= article.title %></a></h1>
+          <p class="blog-post-meta"><%= article.created_at.strftime("%d-%m-%Y") %> by <a><%= article.autor %></a></p>
+          <p><%= article.content %></p>
+          <hr>
+        <% end %>
+      <% else %>
+        <p>No articles have been created yet!</p>
+      <% end %>
+    </div>
+
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="p-4 mb-1 bg-body-tertiary rounded">
+          <h4><a href="/about"class="link-body-emphasis fst-italic">About</a></h4>
+          <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
