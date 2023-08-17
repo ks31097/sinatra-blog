@@ -1,6 +1,6 @@
 require_relative 'config/environment'
 
-use AboutController
-use UserController
+use Rack::MethodOverride
 use ArticleController
-run ApplicationController
+use AboutController
+run UserController

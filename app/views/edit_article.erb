@@ -1,0 +1,9 @@
+<h1>Update article: "<%= @article.title %>"</h1>
+
+<form action="/articles/<%=@article.id%>" method="post">
+  <input type="hidden" name="_method" value="PUT">
+  <%= erb 'form_article'.to_sym %>
+
+<button type="submit" class="btn btn-primary">Edit article</button>
+</form>
+
