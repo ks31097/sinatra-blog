@@ -15,14 +15,19 @@ class ArticleController < ApplicationController
   # @method: Display all articles in json
   # $curl 127.0.0.1:9292/articles_json
   get '/articles_json/?' do
-    json_response(data: find_articles)
+    articles = find_articles
+    if articles.to_s.length > 0 then
+      json_response(data: articles)
+    else
+      json_response(data: 'No articles have been created yet!')
+    end
   end
 
   # @views/index: Render an erb file which shows all atricles
   get '/?' do
     begin
       title 'Articles:'
-      find_articles
+      @articles = find_articles
 
       erb_response 'index'.to_sym
     rescue => e
@@ -33,23 +38,23 @@ class ArticleController < ApplicationController
   # @method: Add a new article to the DB
   # $curl -X POST 127.0.0.1:9292/articles_json/create -d '{}'
   # $curl -X POST 127.0.0.1:9292/articles_json/create -d '{"id":8,"title":"Article","content":"This is new article","autor":"Autor"}'
-  post '/articles_json/create' do
+  post '/articles_json/create/?' do
     begin
       article = Article.create( self.data_json(created: true) )
 
       if article_error(article).length > 0 then
         json_response_db(data: article, message: article_error(article))
       else
-        json_response_db(data: article, message: 'Article add to the DB')
+        json_response_db(data: article, message: 'Current article')
       end
     rescue => e
       json_response(code: 422, data: { error: e.message })
     end
   end
 
-  # @views/index: Render an erb file for add new article
+  # @views/new_article: Render an erb file for add new article
   get '/articles/new/?' do
-    create_article
+    @article = create_article
 
     erb_response 'new_article'.to_sym
   end
@@ -57,9 +62,10 @@ class ArticleController < ApplicationController
   # @method: Add a new article to the DB
   post '/articles/new/?' do
     begin
-      create_article
+      @article = create_article
 
       if @article.save
+        flash.next[:article_add] = "Article successfully added!"
         redirect to("/articles/#{@article.id}")
       else
         @article_error = article_error(@article)
@@ -78,15 +84,55 @@ class ArticleController < ApplicationController
     json_response(data: find_article)
   end
 
-  # @views/show: Render an erb file which show the article
+  # @views/show_article: Render an erb file which show the article
   get '/articles/:id/?' do
     begin
-      find_article
+      @article = find_article
 
-      erb_response 'show'.to_sym
+      erb_response 'show_article'.to_sym
     rescue => e
       error_response(404, e)
     end
   end
 
+  # @method: Update existing article in the DB according to :id
+  # curl -X PUT 127.0.0.1:9292/articles_json/1/edit -d '{}'
+  put '/articles_json/:id/edit/?' do
+    begin
+      article = Article.find(self.article_id)
+      article.update(self.data_json)
+
+      if article_error(article).length > 0 then
+        json_response_db(data: article, message: article_error(article))
+      else
+        json_response_db(data: article, message: 'Current article')
+      end
+    rescue => e
+      json_response(code: 422, data: { error: e.message })
+    end
+  end
+
+  # @views/edit_article: Render an edit erb file for edit the article
+  get '/articles/:id/edit/?' do
+    begin
+      @article = find_article
+
+      erb_response 'edit_article'.to_sym
+    rescue => e
+      error_response(404, e)
+    end
+  end
+
+  # @method: Updating the article in the DB
+  put '/articles/:id/?' do
+    begin
+      @article = find_article
+      @article.update(article_params)
+
+      flash.next[:notice] = "Article successfully updated"
+      redirect to("/articles/#{@article.id}")
+    rescue => e
+      error_response(404, e)
+    end
+  end
 end

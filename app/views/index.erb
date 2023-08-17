@@ -18,7 +18,7 @@
           <article class="blog-post">
           <h1 class="display-5 link-body-emphasis mb-1 fst-italic">
           <a href="/articles/<%= article.id %>"><%= article.title %></a></h1>
-          <p class="blog-post-meta"><%= article.created_at.strftime("%d-%m-%Y") %> by <a><%= article.autor %></a></p>
+          <p class="blog-post-meta"><%= article.created_at.strftime("%d-%m-%Y") %> by <a><%= article.author %></a></p>
           <p><%= article.content %></p>
           <hr>
         <% end %>

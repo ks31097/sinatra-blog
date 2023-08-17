@@ -5,5 +5,7 @@
 <%end%>
 
 <form class="form-position" action="/articles/new" method="POST">
-  <%= erb_response 'article_form'.to_sym %>
+  <%= erb 'form_article'.to_sym %>
+
+<button type="submit" class="btn btn-primary">Submit</button>
 </form>
