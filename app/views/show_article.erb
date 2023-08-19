@@ -5,3 +5,8 @@
 <p><%= @article.content %></p>
 
 <p><a href="/articles/<%= @article.id %>/edit">Edit article</a></p>
+
+<form action="/articles/<%= @article.id %>" method="post" onclick="return confirm('Are you sure you want to delete this article?');">
+  <input type="hidden" name="_method" value="delete">
+  <button type="submit" class="btn btn-primary">Delete article</button>
+</form>
