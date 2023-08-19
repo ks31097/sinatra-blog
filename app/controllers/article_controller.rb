@@ -12,6 +12,11 @@ class ArticleController < ApplicationController
     set :database_file, '../../config/database.yml'
   end
 
+  # @method: Display a small welcome message
+  get '/hello' do
+    'The server is up and running!'
+  end
+
   # @method: Display all articles in json
   # $curl 127.0.0.1:9292/articles_json
   get '/articles_json/?' do
@@ -65,7 +70,7 @@ class ArticleController < ApplicationController
       @article = create_article
 
       if @article.save
-        flash.next[:article_add] = "Article successfully added!"
+        flash.next[:article_added] = "Article successfully added!"
         redirect to("/articles/#{@article.id}")
       else
         @article_error = article_error(@article)
@@ -129,8 +134,32 @@ class ArticleController < ApplicationController
       @article = find_article
       @article.update(article_params)
 
-      flash.next[:notice] = "Article successfully updated"
+      flash.next[:article_updated] = "Article successfully updated"
       redirect to("/articles/#{@article.id}")
+    rescue => e
+      error_response(404, e)
+    end
+  end
+
+  # @method: Delete the article in the DB according to :id
+  # curl -X DELETE 127.0.0.1:9292/articles_json/15/destroy
+  delete '/articles_json/:id/destroy/?' do
+    begin
+      article = Article.find(self.article_id)
+      article.destroy
+      json_response(data: { message: "Article deleted successfully!" })
+    rescue => e
+      json_response(code: 422, data: { error: e.message })
+    end
+  end
+
+  delete '/articles/:id' do
+    begin
+      @article = find_article
+      @article.destroy
+
+      flash.next[:araticle_deleted] = "Article deleted successfully!"
+      redirect to('/')
     rescue => e
       error_response(404, e)
     end
