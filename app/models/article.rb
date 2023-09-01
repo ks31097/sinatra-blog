@@ -1,7 +1,9 @@
 require "sinatra/activerecord"
 
 class Article < ActiveRecord::Base
-  validates :title, presence: true
+  belongs_to :user
+
+  validates :title, presence: true, length: { minimum: 5 }
   validates :content, presence: true
-  # validates :autor, presence: true
+  # validates :author, presence: true
 end
