@@ -10,9 +10,15 @@ class ApplicationController < Sinatra::Base
 
     set :root, File.dirname(__FILE__) # __FILE__ is the current file
 
-    use Rack::Protection
-    enable :sessions
+    register Sinatra::ActiveRecordExtension
+    set :database_file, '../../config/database.yml'
+
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+    enable :sessions
+
+    set :session_store, Rack::Session::Pool
+
+    use Rack::Protection
 
     register Sinatra::Flash
   end
