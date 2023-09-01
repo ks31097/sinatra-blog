@@ -7,9 +7,6 @@ require_relative '../models/article'
 class ArticleController < ApplicationController
   configure do
     helpers ArticlesHelper
-
-    register Sinatra::ActiveRecordExtension
-    set :database_file, '../../config/database.yml'
   end
 
   # @method: Display a small welcome message
@@ -20,6 +17,9 @@ class ArticleController < ApplicationController
   # @method: Display all articles in json
   # $curl 127.0.0.1:9292/articles_json
   get '/articles_json/?' do
+
+      puts session: session[:json_user_id]
+    puts session: session[:user_id]
     articles = find_articles
     if articles.to_s.length > 0 then
       json_response(data: articles)
@@ -44,43 +44,56 @@ class ArticleController < ApplicationController
   # $curl -X POST 127.0.0.1:9292/articles_json/create -d '{}'
   # $curl -X POST 127.0.0.1:9292/articles_json/create -d '{"id":8,"title":"Article","content":"This is new article","autor":"Autor"}'
   post '/articles_json/create/?' do
-    begin
-      article = Article.create( self.data_json(created: true) )
+    # puts session: session[:json_user_id]
+    # puts session: session[:user_id]
+    # if session[:user_id]
+    if json_user_loggedin?
+      begin
+        article = Article.create( self.data_json(created: true) )
 
-      if article_error(article).length > 0 then
-        json_response_db(data: article, message: article_error(article))
-      else
-        json_response_db(data: article, message: 'Current article')
+        if article_error(article).length > 0 then
+          json_response_db(data: article, message: article_error(article))
+        else
+          json_response_db(data: article, message: 'Current article')
+       end
+      rescue => e
+        json_response(code: 422, data: { error: e.message })
       end
-    rescue => e
-      json_response(code: 422, data: { error: e.message })
+    else
+      json_response(code: 422, data: { error: json_not_logged_message })
     end
   end
 
   # @views/new_article: Render an erb file for add new article
   get '/articles/new/?' do
-    @article = create_article
-
-    erb_response 'new_article'.to_sym
+    # puts session[:user_id]
+    unless !logged_in?
+      @article = create_article
+      erb_response 'new_article'.to_sym
+    else
+      redirect_if_not_logged_in
+    end
   end
 
   # @method: Add a new article to the DB
   post '/articles/new/?' do
-    begin
-      @article = create_article
+    unless !logged_in?
+      begin
+        @article = create_article
 
-      if @article.save
-        flash.next[:article_added] = "Article successfully added!"
-        redirect to("/articles/#{@article.id}")
-      else
-        @article_error = article_error(@article)
-
-        flash.now[:article_error] = article_error(@article)
-        erb_response 'new_article'.to_sym
+        if @article.save
+          flash.next[:article_added] = "Article successfully added!"
+          redirect to "/articles/#{@article.id}"
+        else
+          # @article_error = article_error(@article)
+          flash.now[:article_error] = article_error(@article)
+          erb_response 'new_article'.to_sym
+        end
+      rescue => e
+        error_response(404, e)
       end
-
-    rescue => e
-      error_response(404, e)
+    else
+      redirect_if_not_logged_in
     end
   end
 
@@ -103,65 +116,85 @@ class ArticleController < ApplicationController
   # @method: Update existing article in the DB according to :id
   # curl -X PUT 127.0.0.1:9292/articles_json/1/edit -d '{}'
   put '/articles_json/:id/edit/?' do
-    begin
-      article = Article.find(self.article_id)
-      article.update(self.data_json)
+    if json_user_logged_in?
+      begin
+        article = Article.find(self.article_id)
+        article.update(self.data_json)
 
-      if article_error(article).length > 0 then
-        json_response_db(data: article, message: article_error(article))
-      else
-        json_response_db(data: article, message: 'Current article')
+        if article_error(article).length > 0 then
+          json_response_db(data: article, message: article_error(article))
+        else
+          json_response_db(data: article, message: 'Current article')
+        end
+      rescue => e
+        json_response(code: 422, data: { error: e.message })
       end
-    rescue => e
-      json_response(code: 422, data: { error: e.message })
+    else
+      json_response(code: 422, data: { error: json_not_logged_message })
     end
   end
 
   # @views/edit_article: Render an edit erb file for edit the article
   get '/articles/:id/edit/?' do
-    begin
-      @article = find_article
+    unless !logged_in?
+      begin
+        @article = find_article
 
-      erb_response 'edit_article'.to_sym
-    rescue => e
-      error_response(404, e)
+        erb_response 'edit_article'.to_sym
+      rescue => e
+        error_response(404, e)
+      end
+    else
+      redirect_if_not_logged_in
     end
   end
 
   # @method: Updating the article in the DB
   put '/articles/:id/?' do
-    begin
-      @article = find_article
-      @article.update(article_params)
+    unless !logged_in?
+      begin
+        @article = find_article
+        @article.update(article_params)
 
-      flash.next[:article_updated] = "Article successfully updated"
-      redirect to("/articles/#{@article.id}")
-    rescue => e
-      error_response(404, e)
+        flash.next[:article_updated] = "Article successfully updated"
+        redirect to "/articles/#{@article.id}"
+      rescue => e
+        error_response(404, e)
+      end
+    else
+      redirect_if_not_logged_in
     end
   end
 
   # @method: Delete the article in the DB according to :id
   # curl -X DELETE 127.0.0.1:9292/articles_json/15/destroy
   delete '/articles_json/:id/destroy/?' do
-    begin
-      article = Article.find(self.article_id)
-      article.destroy
-      json_response(data: { message: "Article deleted successfully!" })
-    rescue => e
-      json_response(code: 422, data: { error: e.message })
+    if json_user_logged_in?
+      begin
+        article = Article.find(self.article_id)
+        article.destroy
+        json_response(data: { message: "Article deleted successfully!" })
+      rescue => e
+        json_response(code: 422, data: { error: e.message })
+      end
+    else
+      json_response(code: 422, data: { error: json_not_logged_message })
     end
   end
 
   delete '/articles/:id' do
-    begin
-      @article = find_article
-      @article.destroy
+      unless !logged_in?
+        begin
+          @article = find_article
+          @article.destroy
 
-      flash.next[:araticle_deleted] = "Article deleted successfully!"
-      redirect to('/')
-    rescue => e
-      error_response(404, e)
+          flash.next[:article_del] = "Article deleted successfully!"
+          redirect to '/'
+        rescue => e
+          error_response(404, e)
+        end
+      else
+        redirect_if_not_logged_in
+      end
     end
-  end
 end
