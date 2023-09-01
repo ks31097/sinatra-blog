@@ -23,3 +23,5 @@ group :test do
   gem "rspec", "~> 3.12"
   gem "rubocop", "~> 1.55"
 end
+
+gem "bcrypt", "~> 3.1"
