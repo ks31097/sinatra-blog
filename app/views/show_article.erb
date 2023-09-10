@@ -1,12 +1,21 @@
-<a href="/" title="Main page">All articles</a>
-
 <h1><%= @article.title %></h1>
 
 <p><%= @article.content %></p>
+<footer class="blockquote-footer">Author <%= article_author(@article.user_id) %></footer>
 
-<p><a href="/articles/<%= @article.id %>/edit">Edit article</a></p>
+<div class="text-end text-body-secondary">
+  <p class="mb-0">
+    <a href="#">Back to top</a>
+  </p>
+</div>
 
-<form action="/articles/<%= @article.id %>" method="post" onclick="return confirm('Are you sure you want to delete this article?');">
-  <input type="hidden" name="_method" value="delete">
-  <button type="submit" class="btn btn-primary">Delete article</button>
-</form>
+<% unless session[:full_name] == article_author(@article.user_id) %>
+  <p>You cann't update this article</p>
+<% else %>
+  <p><a href="/articles/<%= @article.id %>/edit">Edit article</a></p>
+
+  <form action="/articles/<%= @article.id %>" method="post" onclick="return confirm('Are you sure you want to delete this article?');">
+    <input type="hidden" name="_method" value="delete">
+    <button type="submit" class="btn btn-primary">Delete article</button>
+  </form>
+<% end %>
