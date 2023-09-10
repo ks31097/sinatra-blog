@@ -1,12 +1,13 @@
 <form class="form-position" action="/log_in" method="POST">
-  <div class="col-xs-12 col-md-5 mb-3">
-    <label for="user_email" class="form-label">User email:</label>
-    <input name="user[email]" type="text" class="form-control" autocomplete="on">
+
+  <div class="mx-auto col-9 col-md-7 col-lg-5 my-5">
+    <h1 class="h3 mb-3 fw-normal">Please log in</h1>
+
+    <%= erb_response 'form_user'.to_sym %>
+
+    <button class="btn btn-primary w-100 py-2" type="submit">Log in</button>
+    <p class="text-body-secondary my-2">Not a member? <a href="/sign_up">Register</a></p>
   </div>
 
-  <div class="col-xs-12 col-md-5 mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password:</label>
-    <input name="user[password]" type="password" class="form-control" id="exampleInputPassword1">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
