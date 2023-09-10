@@ -3,9 +3,5 @@
 <form class="form-position" action="/articles/new" method="POST">
   <%= erb 'form_article'.to_sym %>
 
-<div class="col-xs-12 col-md-12 mb-3">
-  <input name="article[user_id]" type="hidden" class="form-control" value="<%= session[:user_id] %>" autocomplete="off">
-</div>
-
-<button type="submit" class="btn btn-primary">Submit</button>
+<button type="submit" class="btn btn-primary">Create the article</button>
 </form>
