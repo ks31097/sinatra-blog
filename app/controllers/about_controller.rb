@@ -5,11 +5,9 @@ require_relative 'application_controller'
 class AboutController < ApplicationController
   get '/about/?' do
     begin
-      @about_info = session[:info]
-
-      erb 'about'.to_sym
-    rescue => e
-      error_response(404, e)
+      erb_response :about
+    rescue
+      erb_response :not_found
     end
   end
 end
