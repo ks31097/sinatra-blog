@@ -1,0 +1,12 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - Gemfile.lock
+    - db/schema.rb
+    - Gemfile
+    - spec/main_spec.rb
+
+Style/Documentation:
+  Enabled: false
+
