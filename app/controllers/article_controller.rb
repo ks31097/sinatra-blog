@@ -16,14 +16,12 @@ class ArticleController < ApplicationController
 
   # @views/index: Display all atricles
   get '/?' do
-    begin
-      title 'Articles:'
-      @articles = find_articles
+    title 'Articles:'
+    @articles = find_articles
 
-      erb_response :index
-    rescue # StandardError => e
-      erb_response :not_found
-    end
+    erb_response :index
+  rescue StandardError
+    erb_response :not_found
   end
 
   # @views/new_article: Add new article
@@ -51,7 +49,7 @@ class ArticleController < ApplicationController
           flash.now[:warning] = error_message(@article)
           erb_response :new_article
         end
-      rescue
+      rescue StandardError
         erb_response :not_found
       end
     else
@@ -61,13 +59,11 @@ class ArticleController < ApplicationController
 
   # @views/show_article: Show the article
   get '/articles/:id/?' do
-    begin
-      @article = find_article
+    @article = find_article
 
-      erb_response :show_article
-    rescue
-      erb_response :not_found
-    end
+    erb_response :show_article
+  rescue StandardError
+    erb_response :not_found
   end
 
   # @views/edit_article: Edit the article
@@ -77,7 +73,7 @@ class ArticleController < ApplicationController
         @article = find_article
 
         erb_response :edit_article
-      rescue
+      rescue StandardError
         erb_response :not_found
       end
     else
@@ -94,7 +90,7 @@ class ArticleController < ApplicationController
 
         flash.next[:success] = 'Article successfully updated'
         redirect to "/articles/#{@article.id}"
-      rescue
+      rescue StandardError
         erb_response :not_found
       end
     else
@@ -111,7 +107,7 @@ class ArticleController < ApplicationController
 
         flash.next[:success] = 'Article deleted successfully!'
         redirect to '/'
-      rescue
+      rescue StandardError
         erb_response :not_found
       end
     else

@@ -16,21 +16,19 @@ class UserController < ApplicationController
   end
 
   post '/sign_up/?' do
-    begin
-      @user = create_user
+    @user = create_user
 
-      if @user.save
-        session[:user_id] = @user.id
-        session[:full_name] = @user.full_name
-        flash.next[:success] = "Welcome #{session[:full_name]}"
-        redirect to '/?'
-      else
-        flash.now[:warning] = error_message(@user)
-        erb_response :sign_up
-      end
-    rescue
-      erb_response :not_found
+    if @user.save
+      session[:user_id] = @user.id
+      session[:full_name] = @user.full_name
+      flash.next[:success] = "Welcome #{session[:full_name]}"
+      redirect to '/?'
+    else
+      flash.now[:warning] = error_message(@user)
+      erb_response :sign_up
     end
+  rescue StandardError
+    erb_response :not_found
   end
 
   get '/log_in/?' do
@@ -38,21 +36,19 @@ class UserController < ApplicationController
   end
 
   post '/log_in/?' do
-    begin
-      user = find_user
+    user = find_user
 
-      if user && user_password(user)
-        session[:user_id] = user.id
-        session[:full_name] = user.full_name
-        flash.next[:success] = "Welcome #{session[:full_name]}"
-        redirect to '/?'
-      else
-        flash.next[:warning] = 'Something wrong, try again!'
-        redirect to '/log_in'
-      end
-    rescue
-      erb_response :not_found
+    if user && user_password(user)
+      session[:user_id] = user.id
+      session[:full_name] = user.full_name
+      flash.next[:success] = "Welcome #{session[:full_name]}"
+      redirect to '/?'
+    else
+      flash.next[:warning] = 'Something wrong, try again!'
+      redirect to '/log_in'
     end
+  rescue StandardError
+    erb_response :not_found
   end
 
   get '/log_out/?' do
