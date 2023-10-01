@@ -20,8 +20,8 @@ class ArticleController < ApplicationController
     @articles = find_articles
 
     erb_response :index
-  rescue StandardError
-    erb_response :not_found
+    rescue StandardError
+      erb_response :not_found
   end
 
   # @views/new_article: Add new article
